@@ -1,11 +1,129 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="hi">
 <head>
-    <title>My First Website</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AJAY AI 2.0</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101827;color:white;font-family:Arial;height:100vh;display:flex;flex-direction:column}
+header{padding:15px;background:#172438;display:flex;justify-content:space-between;align-items:center}
+h2{margin:0}
+small{color:#22c55e}
+#chat{flex:1;overflow-y:auto;padding:15px}
+.msg{padding:12px 15px;margin:10px 0;border-radius:15px;max-width:85%;white-space:pre-wrap;overflow-wrap:anywhere}
+.user{background:#2563eb;margin-left:auto}
+.ai{background:#263449;margin-right:auto}
+footer{display:flex;padding:12px;gap:8px;background:#172438}
+input{flex:1;min-width:0;padding:14px;border:0;border-radius:25px;background:#263449;color:white;font-size:16px}
+button{border:0;border-radius:20px;padding:12px;background:#2563eb;color:white}
+.clear{background:#dc2626}
+</style>
 </head>
 <body>
-    <h1>Hello World!</h1>
-    <p>This is my first practice website.</p>
+
+<header>
+<div>
+<h2>🤖 AJAY AI 2.0</h2>
+<small>● Offline Mode Active</small>
+</div>
+<button class="clear" onclick="clearChat()">Clear</button>
+</header>
+
+<div id="chat"></div>
+
+<footer>
+<input id="message" placeholder="Kuch bhi pucho..."
+onkeydown="if(event.key==='Enter')sendMessage()">
+<button onclick="sendMessage()">➤</button>
+</footer>
+
+<script>
+const chat=document.getElementById("chat");
+const input=document.getElementById("message");
+
+let history=JSON.parse(localStorage.getItem("ajayHistory")||"[]");
+
+function showMessage(text,type){
+const div=document.createElement("div");
+div.className="msg "+type;
+div.textContent=text;
+chat.appendChild(div);
+chat.scrollTop=chat.scrollHeight;
+}
+
+function saveHistory(){
+localStorage.setItem("ajayHistory",JSON.stringify(history));
+}
+
+function loadHistory(){
+chat.innerHTML="";
+if(history.length===0){
+showMessage("Namaste! Main AJAY AI hoon. Aaj kya seekhna hai?","ai");
+return;
+}
+history.forEach(item=>showMessage(item.text,item.type));
+}
+
+function getReply(text){
+let t=text.toLowerCase();
+
+if(t.includes("hello")||t.includes("hi")||t.includes("namaste"))
+return "Namaste! Main AJAY AI hoon. Batao kya madad karun?";
+
+if(t.includes("naam")||t.includes("name"))
+return "Mera naam AJAY AI hai!";
+
+if(t.includes("kaise ho"))
+return "Main badhiya hoon! Aap kaise hain?";
+
+if(t.includes("time"))
+return "Abhi samay: "+new Date().toLocaleTimeString();
+
+if(t.includes("date"))
+return "Aaj ki date: "+new Date().toLocaleDateString();
+
+if(t.includes("python"))
+return "Python ek programming language hai. Isse AI, websites aur automation bana sakte hain.";
+
+if(t.includes("termux"))
+return "Termux Android par Linux commands aur programming seekhne ka tool hai.";
+
+if(t.includes("thank"))
+return "Aapka swagat hai!";
+
+if(t.includes("bye"))
+return "Phir milenge! AJAY AI yahin hai.";
+
+return "Main abhi Offline Mode mein hoon. Is sawal ka jawab meri local knowledge mein nahi hai. Internet AI baad mein jodenge.";
+}
+
+function sendMessage(){
+let text=input.value.trim();
+if(!text)return;
+
+history.push({text:text,type:"user"});
+showMessage(text,"user");
+
+let reply=getReply(text);
+history.push({text:reply,type:"ai"});
+showMessage(reply,"ai");
+
+saveHistory();
+input.value="";
+}
+
+function clearChat(){
+if(confirm("Kya puri chat delete karni hai?")){
+history=[];
+saveHistory();
+loadHistory();
+}
+}
+
+loadHistory();
+</script>
 </body>
 </html>
-0
+
